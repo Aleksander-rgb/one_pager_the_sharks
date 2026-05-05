@@ -1,26 +1,324 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-syne);
+  --font-body: var(--font-dm-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #07090D;
+  --foreground: #E8EEF4;
+  --surface: #0D1319;
+  --surface-2: #131C26;
+  --cyan: #00D4FF;
+  --cyan-dim: rgba(0, 212, 255, 0.12);
+  --cyan-border: rgba(0, 212, 255, 0.2);
+  --cyan-glow: rgba(0, 212, 255, 0.35);
+  --red: #FF2855;
+  --text-primary: #E8EEF4;
+  --text-secondary: #6B7E92;
+  --text-muted: #3A4A5C;
+  --border: rgba(255, 255, 255, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────── */
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px var(--cyan-glow); }
+  50%       { box-shadow: 0 0 40px var(--cyan-glow), 0 0 80px rgba(0,212,255,0.15); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes scan-line {
+  0%   { top: 0%; opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes draw-line {
+  from { stroke-dashoffset: 300; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
+
+/* ─── Animated helpers ──────────────────────────────────────── */
+
+.animate-ticker {
+  animation: ticker 28s linear infinite;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease both;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* ─── Scroll-reveal (added via JS) ─────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ─── Noise texture overlay ─────────────────────────────────── */
+
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Cyan grid background ──────────────────────────────────── */
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ─── Glow card ─────────────────────────────────────────────── */
+
+.glow-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.glow-card:hover {
+  border-color: var(--cyan-border);
+  box-shadow: 0 0 30px var(--cyan-dim), 0 8px 40px rgba(0,0,0,0.4);
+  transform: translateY(-3px);
+}
+
+/* ─── Cyan button ───────────────────────────────────────────── */
+
+.btn-cyan {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cyan);
+  color: #020507;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 4px;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-cyan:hover {
+  box-shadow: 0 0 24px var(--cyan-glow), 0 4px 20px rgba(0,212,255,0.3);
+  transform: translateY(-1px);
+}
+
+/* ─── Outline button ────────────────────────────────────────── */
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 13px 28px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  transition: border-color 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  border-color: var(--cyan-border);
+  color: var(--cyan);
+}
+
+/* ─── Section label ─────────────────────────────────────────── */
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 20px;
+}
+
+.section-label::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--cyan);
+}
+
+/* ─── Process step line ─────────────────────────────────────── */
+
+.step-connector {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan-border), transparent);
+}
+
+/* ─── Testimonial quote mark ────────────────────────────────── */
+
+.quote-mark {
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--cyan);
+  opacity: 0.2;
+  font-family: Georgia, serif;
+  position: absolute;
+  top: -10px;
+  left: 0;
+}
+
+/* ─── Stat number ───────────────────────────────────────────── */
+
+.stat-number {
+  font-family: var(--font-syne), 'Syne', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: var(--cyan);
+  line-height: 1;
+}
+
+/* ─── Hero gradient text ────────────────────────────────────── */
+
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Ticker pause on hover ─────────────────────────────────── */
+
+.ticker-wrapper:hover .animate-ticker {
+  animation-play-state: paused;
+}
+
+/* ─── Automation flow node ──────────────────────────────────── */
+
+.flow-node {
+  background: var(--surface-2);
+  border: 1px solid var(--cyan-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.flow-arrow {
+  color: var(--cyan);
+  opacity: 0.5;
+  font-size: 1rem;
+}
+
+/* ─── Section spacing ───────────────────────────────────────── */
+
+section {
+  position: relative;
+}
+
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
