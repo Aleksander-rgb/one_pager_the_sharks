@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { translations, type Lang } from "./translations";
 
 /* ── Scroll-reveal ───────────────────────────────────────── */
 function useReveal() {
@@ -68,7 +69,6 @@ const IconCheck = () => (
   </svg>
 );
 
-/* ── Data ────────────────────────────────────────────────── */
 const TICKER_ITEMS = [
   "AI AUTOMATION", "META ADS", "GOOGLE ADS", "CONTENT CREATION",
   "GRAPHIC DESIGN", "MARKETING AUTOMATION", "PERFORMANCE", "AI AUTOMATION",
@@ -76,73 +76,13 @@ const TICKER_ITEMS = [
   "MARKETING AUTOMATION", "PERFORMANCE",
 ];
 
-const SERVICES = [
-  {
-    icon: <IconAutomation />, label: "Marketing Automation",
-    headline: "Automatyzacja, która sprzedaje 24/7",
-    desc: "Budujemy inteligentne lejki sprzedażowe, sekwencje e-mail i scenariusze remarketingowe, które prowadzą klienta do zakupu bez Twojej interwencji.",
-    features: ["Lead nurturing", "E-mail sequences", "Retargeting flows", "CRM automation"],
-    featured: true,
-  },
-  {
-    icon: <IconAds />, label: "Paid Ads",
-    headline: "Meta & Google Ads z precyzją rekina",
-    desc: "Kampanie sprzedażowe, dynamiczny remarketing i lookalike audiences — optymalizujemy każdą złotówkę pod maksymalny ROAS.",
-    features: ["Meta Ads", "Google Ads", "Remarketing", "Lookalike"],
-    featured: false,
-  },
-  {
-    icon: <IconContent />, label: "Content Creation",
-    headline: "Treści, które konwertują",
-    desc: "Od strategii przez copy po montaż wideo — tworzymy content dopasowany do algorytmów i do ludzi.",
-    features: ["Social media", "Video editing", "Copywriting", "Content plan"],
-    featured: false,
-  },
-  {
-    icon: <IconDesign />, label: "Graphic Design",
-    headline: "Visual identity, która zatrzymuje scroll",
-    desc: "Identyfikacja wizualna, kreacje reklamowe i materiały brandingowe spójne z Twoją strategią.",
-    features: ["Brand identity", "Ad creatives", "Social graphics", "Brandbook"],
-    featured: false,
-  },
-];
-
-const STEPS = [
-  { num: "01", title: "Analiza AI", desc: "Mapujemy dane, lejek sprzedażowy i zachowania klientów przy użyciu narzędzi AI." },
-  { num: "02", title: "Strategia", desc: "Projektujemy ekosystem marketingowy oparty na danych i algorytmach." },
-  { num: "03", title: "Wdrożenie", desc: "Uruchamiamy kampanie, automacje i content równolegle, bez przestojów." },
-  { num: "04", title: "Skalowanie", desc: "AI optymalizuje wyniki w czasie rzeczywistym — Ty skupiasz się na biznesie." },
-];
-
-const WHY = [
-  { num: "01", title: "AI w każdym punkcie", desc: "Nie używamy AI jako ozdobnika. Wbudowujemy je w procesy: targeting, copy, segmentację i optymalizację kampanii." },
-  { num: "02", title: "Dane, nie intuicja", desc: "Każda decyzja wynika z analizy. Testujemy, mierzymy i optymalizujemy — bez zgadywania." },
-  { num: "03", title: "Szybkość rekina", desc: "Wdrożenia w dni, nie tygodnie. Reagujemy na zmiany rynku zanim zrobi to konkurencja." },
-  { num: "04", title: "Jeden ekosystem", desc: "Reklamy, automatyzacje, content i design w jednym miejscu — spójna strategia bez chaosu." },
-];
-
-const TESTIMONIALS = [
-  {
-    quote: "Dzięki doskonałej organizacji byłem w stanie nagrać materiał na wiele miesięcy zaledwie w jeden dzień. Wszystko dostarczane na czas, z uwzględnieniem wszystkich poprawek. Gorąco polecam.",
-    name: "Mariusz Borkowski", role: "Lekarz medycyny estetycznej", initial: "M",
-  },
-  {
-    quote: "Zdecydowanie polecam współpracę. Są bardzo kreatywni — szybko wdrażają pomysły i świetnie znają trendy w social mediach, co przekłada się na realny wzrost zasięgów organicznych.",
-    name: "Artur Mioduszewski", role: "CMO, Kebab King", initial: "A",
-  },
-];
-
-const FLOW_NODES = [
-  { icon: "👤", label: "Nowy lead", meta: "trigger" },
-  { icon: "🤖", label: "AI kwalifikacja", meta: "AI · 0.3s" },
-  { icon: "📧", label: "E-mail sequence", meta: "auto" },
-  { icon: "🎯", label: "Retargeting ad", meta: "48h later" },
-  { icon: "✅", label: "Konwersja", meta: "+ROAS" },
-];
+const SERVICE_ICONS = [<IconAutomation key="a" />, <IconAds key="b" />, <IconContent key="c" />, <IconDesign key="d" />];
 
 /* ── Component ───────────────────────────────────────────── */
 export default function Home() {
   useReveal();
+  const [lang, setLang] = useState<Lang>("pl");
+  const t = translations[lang];
 
   return (
     <div style={{ background: "var(--background)", color: "var(--text-primary)" }}>
@@ -155,16 +95,17 @@ export default function Home() {
         backdropFilter: "blur(16px)",
         borderBottom: "1px solid var(--border)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
+        gap: 12,
       }}>
         <span className="font-display" style={{
           fontWeight: 800, fontSize: "1.2rem",
-          letterSpacing: "-0.02em", color: "var(--text-primary)",
+          letterSpacing: "-0.02em", color: "var(--text-primary)", flexShrink: 0,
         }}>
           the <span style={{ color: "var(--cyan)" }}>sharks</span>
         </span>
 
         <div className="nav-links">
-          {["Automatyzacja", "Reklamy", "Content", "Design"].map((item) => (
+          {t.nav.links.map((item) => (
             <a key={item} href="#" style={{
               fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.05em",
               color: "var(--text-secondary)", textDecoration: "none",
@@ -176,9 +117,38 @@ export default function Home() {
           ))}
         </div>
 
-        <a href="#contact" className="btn-cyan" style={{ padding: "10px 20px", fontSize: "0.75rem" }}>
-          Porozmawiajmy
-        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          {/* Language switcher */}
+          <div style={{ display: "flex", gap: 3 }}>
+            {(["pl", "en", "de"] as Lang[]).map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                style={{
+                  fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  padding: "4px 7px", borderRadius: 4,
+                  background: lang === l ? "var(--cyan)" : "transparent",
+                  color: lang === l ? "#020507" : "var(--text-secondary)",
+                  border: `1px solid ${lang === l ? "var(--cyan)" : "var(--border)"}`,
+                  cursor: "pointer", transition: "all 0.2s",
+                }}
+                onMouseEnter={e => {
+                  if (lang !== l) e.currentTarget.style.borderColor = "var(--text-secondary)";
+                }}
+                onMouseLeave={e => {
+                  if (lang !== l) e.currentTarget.style.borderColor = "var(--border)";
+                }}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <a href="#contact" className="btn-cyan" style={{ padding: "10px 20px", fontSize: "0.75rem" }}>
+            {t.nav.cta}
+          </a>
+        </div>
       </nav>
 
       {/* ── HERO ─────────────────────────────────────────── */}
@@ -203,7 +173,7 @@ export default function Home() {
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 860, width: "100%" }}>
           <div className="animate-fade-in section-label" style={{ justifyContent: "center", marginBottom: 24 }}>
-            <IconAI /> AI-Powered Marketing Agency
+            <IconAI /> {t.hero.badge}
           </div>
 
           <h1 className="animate-fade-up font-display" style={{
@@ -212,8 +182,8 @@ export default function Home() {
             lineHeight: 1.05, letterSpacing: "-0.03em",
             marginBottom: 24,
           }}>
-            Twoja sprzedaż.<br />
-            <span className="gradient-text">Napędzana przez AI.</span>
+            {t.hero.headline1}<br />
+            <span className="gradient-text">{t.hero.headline2}</span>
           </h1>
 
           <p className="animate-fade-up" style={{
@@ -221,16 +191,15 @@ export default function Home() {
             color: "var(--text-secondary)", maxWidth: 580, margin: "0 auto 40px",
             animationDelay: "0.1s",
           }}>
-            Łączymy marketing automation, AI i płatne reklamy w jeden ekosystem,
-            który skaluje Twój biznes — bez przestojów, bez zbędnego hałasu.
+            {t.hero.desc}
           </p>
 
           <div className="animate-fade-up hero-cta" style={{ justifyContent: "center", animationDelay: "0.2s" }}>
             <a href="#contact" className="btn-cyan animate-pulse-glow">
-              Zacznij z AI <IconArrow />
+              {t.hero.ctaPrimary} <IconArrow />
             </a>
             <a href="#services" className="btn-outline">
-              Zobacz usługi
+              {t.hero.ctaSecondary}
             </a>
           </div>
         </div>
@@ -241,7 +210,7 @@ export default function Home() {
           color: "var(--text-muted)", fontSize: "0.7rem", letterSpacing: "0.15em",
           textTransform: "uppercase",
         }}>
-          <span>Scroll</span>
+          <span>{t.hero.scroll}</span>
           <div style={{ width: 1, height: 40, background: "linear-gradient(to bottom, var(--text-muted), transparent)" }} />
         </div>
       </section>
@@ -254,12 +223,7 @@ export default function Home() {
       }}>
         <div className="section-inner">
           <div className="grid-stats">
-            {[
-              { num: "50+", label: "Klientów" },
-              { num: "200+", label: "Kampanii" },
-              { num: "3×", label: "Śr. wzrost ROAS" },
-              { num: "24/7", label: "Automatyzacja" },
-            ].map((stat, i) => (
+            {t.stats.map((stat, i) => (
               <div key={i} className="reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
                 <div className="stat-number">{stat.num}</div>
                 <div style={{
@@ -312,31 +276,24 @@ export default function Home() {
 
             {/* Left: copy */}
             <div>
-              <div className="reveal section-label"><IconAutomation /> AI & Marketing Automation</div>
+              <div className="reveal section-label"><IconAutomation /> {t.automation.label}</div>
               <h2 className="reveal reveal-delay-1 font-display" style={{
                 fontWeight: 800,
                 fontSize: "clamp(1.8rem, 4vw, 3rem)", lineHeight: 1.1,
                 letterSpacing: "-0.02em", marginBottom: 24,
               }}>
-                Twój marketing<br />
-                <span style={{ color: "var(--cyan)" }}>działa, gdy śpisz.</span>
+                {t.automation.headline1}<br />
+                <span style={{ color: "var(--cyan)" }}>{t.automation.headline2}</span>
               </h2>
               <p className="reveal reveal-delay-2" style={{
                 fontSize: "1rem", lineHeight: 1.8,
                 color: "var(--text-secondary)", marginBottom: 28,
               }}>
-                Budujemy inteligentne ekosystemy marketingowe oparte na AI — od
-                automatycznego kwalifikowania leadów, przez spersonalizowane sekwencje
-                e-mail, po dynamiczne kampanie remarketingowe. Zero ręcznej pracy,
-                maksymalny wynik.
+                {t.automation.desc}
               </p>
 
               <div className="reveal reveal-delay-3 grid-features">
-                {[
-                  "Automatyczne lejki sprzedażowe", "AI lead scoring",
-                  "Personalizowane e-mail flows", "Dynamiczny retargeting",
-                  "CRM automation", "Analityka w czasie rzeczywistym",
-                ].map((feat, i) => (
+                {t.automation.features.map((feat, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.875rem" }}>
                     <span style={{ color: "var(--cyan)", flexShrink: 0 }}><IconCheck /></span>
                     <span style={{ color: "var(--text-secondary)" }}>{feat}</span>
@@ -345,7 +302,7 @@ export default function Home() {
               </div>
 
               <div className="reveal reveal-delay-4">
-                <a href="#contact" className="btn-cyan">Wdróż automatyzację <IconArrow /></a>
+                <a href="#contact" className="btn-cyan">{t.automation.cta} <IconArrow /></a>
               </div>
             </div>
 
@@ -363,7 +320,7 @@ export default function Home() {
                   <span className="font-display" style={{
                     fontSize: "0.8rem", fontWeight: 700,
                     color: "var(--cyan)", letterSpacing: "0.1em", textTransform: "uppercase",
-                  }}>AI Sales Flow</span>
+                  }}>{t.automation.flowLabel}</span>
                   <div style={{ display: "flex", gap: 5 }}>
                     {["#FF5F57","#FEBC2E","#28C840"].map(c => (
                       <div key={c} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />
@@ -372,18 +329,18 @@ export default function Home() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  {FLOW_NODES.map((node, i) => (
+                  {t.automation.flowNodes.map((node, i) => (
                     <div key={i}>
                       <div className="flow-node">
                         <span style={{ fontSize: "0.95rem" }}>{node.icon}</span>
                         <span>{node.label}</span>
                         <span style={{
                           marginLeft: "auto", fontSize: "0.7rem",
-                          fontWeight: i === FLOW_NODES.length - 1 ? 700 : 400,
-                          color: i === FLOW_NODES.length - 1 ? "var(--cyan)" : "var(--text-muted)",
+                          fontWeight: i === t.automation.flowNodes.length - 1 ? 700 : 400,
+                          color: i === t.automation.flowNodes.length - 1 ? "var(--cyan)" : "var(--text-muted)",
                         }}>{node.meta}</span>
                       </div>
-                      {i < FLOW_NODES.length - 1 && (
+                      {i < t.automation.flowNodes.length - 1 && (
                         <div style={{ height: 16, paddingLeft: 24 }}>
                           <div style={{
                             width: 1, height: "100%", marginLeft: 11,
@@ -399,7 +356,7 @@ export default function Home() {
                   marginTop: 20, paddingTop: 16, borderTop: "1px solid var(--border)",
                   display: "flex", justifyContent: "space-between", alignItems: "center",
                 }}>
-                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Avg. conversion rate boost</span>
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{t.automation.conversionLabel}</span>
                   <span className="font-display" style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--cyan)" }}>+127%</span>
                 </div>
               </div>
@@ -412,19 +369,19 @@ export default function Home() {
       <section id="services" className="section-pad">
         <div className="section-inner">
           <div style={{ textAlign: "center", marginBottom: 52 }}>
-            <div className="reveal section-label" style={{ justifyContent: "center" }}>Nasze usługi</div>
+            <div className="reveal section-label" style={{ justifyContent: "center" }}>{t.services.label}</div>
             <h2 className="reveal reveal-delay-1 font-display" style={{
               fontWeight: 800,
               fontSize: "clamp(1.7rem, 4vw, 2.8rem)",
               letterSpacing: "-0.02em", lineHeight: 1.15,
             }}>
-              Wszystko, czego potrzebuje<br />
-              <span style={{ color: "var(--cyan)" }}>Twój wzrost</span>
+              {t.services.headline1}<br />
+              <span style={{ color: "var(--cyan)" }}>{t.services.headline2}</span>
             </h2>
           </div>
 
           <div className="grid-services">
-            {SERVICES.map((svc, i) => (
+            {t.services.items.map((svc, i) => (
               <div key={i} className={`glow-card reveal reveal-delay-${i + 1}`} style={{
                 borderRadius: 12, padding: "28px 24px", position: "relative", overflow: "hidden",
                 ...(svc.featured ? {
@@ -446,7 +403,7 @@ export default function Home() {
                   border: "1px solid var(--cyan-border)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "var(--cyan)", marginBottom: 16,
-                }}>{svc.icon}</div>
+                }}>{SERVICE_ICONS[i]}</div>
                 <div style={{
                   fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.2em",
                   textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 6,
@@ -482,11 +439,11 @@ export default function Home() {
       }}>
         <div className="section-inner">
           <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div className="reveal section-label" style={{ justifyContent: "center" }}>Jak działamy</div>
+            <div className="reveal section-label" style={{ justifyContent: "center" }}>{t.process.label}</div>
             <h2 className="reveal reveal-delay-1 font-display" style={{
               fontWeight: 800,
               fontSize: "clamp(1.7rem, 4vw, 2.8rem)", letterSpacing: "-0.02em",
-            }}>Precyzja na każdym kroku</h2>
+            }}>{t.process.headline}</h2>
           </div>
 
           <div className="grid-process">
@@ -498,7 +455,7 @@ export default function Home() {
               zIndex: 0,
             }} />
 
-            {STEPS.map((step, i) => (
+            {t.process.steps.map((step, i) => (
               <div key={i} className={`reveal reveal-delay-${i + 1}`} style={{
                 textAlign: "center", padding: "0 12px", position: "relative", zIndex: 1,
               }}>
@@ -529,26 +486,24 @@ export default function Home() {
         <div className="section-inner">
           <div className="grid-why">
             <div className="why-sticky">
-              <div className="reveal section-label">Dlaczego The Sharks</div>
+              <div className="reveal section-label">{t.why.label}</div>
               <h2 className="reveal reveal-delay-1 font-display" style={{
                 fontWeight: 800,
                 fontSize: "clamp(1.8rem, 4vw, 3rem)", lineHeight: 1.1,
                 letterSpacing: "-0.02em", marginBottom: 20,
               }}>
-                AI to nie trend.<br />
-                <span style={{ color: "var(--cyan)" }}>To nasz core.</span>
+                {t.why.headline1}<br />
+                <span style={{ color: "var(--cyan)" }}>{t.why.headline2}</span>
               </h2>
               <p className="reveal reveal-delay-2" style={{
                 fontSize: "0.95rem", lineHeight: 1.8, color: "var(--text-secondary)",
               }}>
-                Nie korzystamy z AI jako ozdobnika w prezentacji. Wbudowujemy
-                sztuczną inteligencję w każdy element procesu marketingowego —
-                od analizy danych po kreację i optymalizację kampanii.
+                {t.why.desc}
               </p>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              {WHY.map((item, i) => (
+              {t.why.items.map((item, i) => (
                 <div key={i} className={`glow-card reveal reveal-delay-${i + 1}`} style={{
                   borderRadius: 10, padding: "24px 24px",
                   display: "flex", gap: 16, alignItems: "flex-start",
@@ -579,15 +534,15 @@ export default function Home() {
       }}>
         <div className="section-inner">
           <div style={{ textAlign: "center", marginBottom: 52 }}>
-            <div className="reveal section-label" style={{ justifyContent: "center" }}>Opinie klientów</div>
+            <div className="reveal section-label" style={{ justifyContent: "center" }}>{t.testimonials.label}</div>
             <h2 className="reveal reveal-delay-1 font-display" style={{
               fontWeight: 800,
               fontSize: "clamp(1.7rem, 4vw, 2.8rem)", letterSpacing: "-0.02em",
-            }}>Mówią o nas</h2>
+            }}>{t.testimonials.headline}</h2>
           </div>
 
           <div className="grid-testimonials">
-            {TESTIMONIALS.map((t, i) => (
+            {t.testimonials.items.map((item, i) => (
               <div key={i} className={`glow-card reveal reveal-delay-${i + 1}`} style={{
                 borderRadius: 12, padding: "32px 28px", position: "relative",
               }}>
@@ -595,7 +550,7 @@ export default function Home() {
                 <p style={{
                   fontSize: "0.95rem", lineHeight: 1.8, color: "var(--text-primary)",
                   marginBottom: 28, position: "relative", zIndex: 1, paddingTop: 12,
-                }}>{t.quote}</p>
+                }}>{item.quote}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{
                     width: 42, height: 42, borderRadius: "50%",
@@ -603,10 +558,10 @@ export default function Home() {
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontFamily: "var(--font-syne)", fontWeight: 800,
                     fontSize: "0.95rem", color: "#020507", flexShrink: 0,
-                  }}>{t.initial}</div>
+                  }}>{item.initial}</div>
                   <div>
-                    <div className="font-display" style={{ fontWeight: 700, fontSize: "0.875rem" }}>{t.name}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: 2 }}>{t.role}</div>
+                    <div className="font-display" style={{ fontWeight: 700, fontSize: "0.875rem" }}>{item.name}</div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: 2 }}>{item.role}</div>
                   </div>
                 </div>
               </div>
@@ -626,31 +581,30 @@ export default function Home() {
           mask: "radial-gradient(ellipse 60% 80% at 50% 100%, black, transparent)",
         }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 720, margin: "0 auto" }}>
-          <div className="reveal section-label" style={{ justifyContent: "center" }}>Zacznij dziś</div>
+          <div className="reveal section-label" style={{ justifyContent: "center" }}>{t.cta.label}</div>
           <h2 className="reveal reveal-delay-1 font-display" style={{
             fontWeight: 800,
             fontSize: "clamp(1.9rem, 5vw, 4rem)", lineHeight: 1.1,
             letterSpacing: "-0.03em", marginBottom: 20,
           }}>
-            Gotowy na marketing,<br />
-            <span className="gradient-text">który sprzedaje sam?</span>
+            {t.cta.headline1}<br />
+            <span className="gradient-text">{t.cta.headline2}</span>
           </h2>
           <p className="reveal reveal-delay-2" style={{
             fontSize: "clamp(0.95rem, 2vw, 1.1rem)", lineHeight: 1.75,
             color: "var(--text-secondary)", marginBottom: 40,
           }}>
-            Umów bezpłatną konsultację i dowiedz się, jak AI może skalować
-            Twój biznes w ciągu najbliższych 90 dni.
+            {t.cta.desc}
           </p>
           <div className="reveal reveal-delay-3">
             <a href="https://thesharks.io/kontakt/" className="btn-cyan animate-pulse-glow"
               style={{ fontSize: "0.9rem", padding: "16px 36px" }}>
-              Umów bezpłatną konsultację <IconArrow />
+              {t.cta.button} <IconArrow />
             </a>
           </div>
           <p className="reveal reveal-delay-4" style={{
             marginTop: 20, fontSize: "0.75rem", color: "var(--text-muted)",
-          }}>Bez zobowiązań. Odpiszemy w ciągu 24 godzin.</p>
+          }}>{t.cta.disclaimer}</p>
         </div>
       </section>
 
@@ -668,7 +622,7 @@ export default function Home() {
               the <span style={{ color: "var(--cyan)" }}>sharks</span>
             </span>
             <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-              © 2025 The Sharks — Agencja Marketingu & AI Automation
+              {t.footer.copy}
             </p>
             <div style={{ display: "flex", gap: 20 }}>
               {[
