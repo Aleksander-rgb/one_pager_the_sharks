@@ -643,7 +643,7 @@ export default function Home() {
             Twój biznes w ciągu najbliższych 90 dni.
           </p>
           <div className="reveal reveal-delay-3">
-            <a href="https://thesharks.io" className="btn-cyan animate-pulse-glow"
+            <a href="https://thesharks.io/kontakt/" className="btn-cyan animate-pulse-glow"
               style={{ fontSize: "0.9rem", padding: "16px 36px" }}>
               Umów bezpłatną konsultację <IconArrow />
             </a>
